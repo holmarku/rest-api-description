@@ -54,7 +54,10 @@ public class ApiDescription {
     /*
     @ElementCollection
     @ListProperties("apiPath, apiMethods.methodId, apiMethods.methodEnum, apiMethods.methodOperation")
-    private Collection<ApiPath> apiPath;
+    
+    hier: @OneToMany(cascade = CascadeType.All, mappedBy ="ToDo")
+    in abhängigen Klasse 
+    private Collection<ApiPath> apiPath; //oder List / ArrayList bzw Map / HashMap
      */
     
 	
