@@ -14,11 +14,9 @@ import de.holmarku.restapidescription.enums.ProductEnum;
 @Entity
 public class ApiDescription {
 	
-	@Id  // The number property is the key property. Keys are required by default
-    @GeneratedValue(generator="system-uuid") // Universally Unique Identifier (1)
-    @GenericGenerator(name="system-uuid", strategy = "uuid")
-	@Column(length=32)  // The column length is used at the UI level and the DB level
-    private String apiId;
+	@Id  
+	@GeneratedValue
+    private Long id;
     
     //@ManyToOne(fetch=FetchType.LAZY)
     //private OpenApiVersion openApiVersion;
@@ -46,7 +44,7 @@ public class ApiDescription {
     */
     @Enumerated(EnumType.STRING)
     @Column(length=10)  // The column length is used at the UI level and the DB level
-    private ProductEnum productUrl; //server
+    private ProductEnum productEnum; //server
     
     @Column(length=50)  // The column length is used at the UI level and the DB level
     private String apiUrl; //server
@@ -59,18 +57,17 @@ public class ApiDescription {
     in abhängigen Klasse 
     private Collection<ApiPath> apiPath; //oder List / ArrayList bzw Map / HashMap
      */
-    
-	
-	public String getApiId() {
-		return apiId;
-	}
-
-	public void setApiId(String apiId) {
-		this.apiId = apiId;
-	}
 
 	public String getApiTitle() {
 		return apiTitle;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public void setApiTitle(String apiTitle) {
@@ -85,12 +82,12 @@ public class ApiDescription {
 		this.apiDescription = apiDescription;
 	}
 
-	public ProductEnum getProductUrl() {
-		return productUrl;
+	public ProductEnum getProductEnum() {
+		return productEnum;
 	}
 
-	public void setProductUrl(ProductEnum productUrl) {
-		this.productUrl = productUrl;
+	public void setProductEnum(ProductEnum productEnum) {
+		this.productEnum = productEnum;
 	}
 
 	public String getApiUrl() {

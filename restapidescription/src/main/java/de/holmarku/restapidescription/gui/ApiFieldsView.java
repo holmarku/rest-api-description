@@ -14,8 +14,8 @@ import org.springframework.util.StringUtils;
 import de.holmarku.restapidescription.model.ApiField;
 import de.holmarku.restapidescription.repository.ApiFieldRepository;
 
-@Route
-public class MainView extends VerticalLayout {
+@Route("fields")
+public class ApiFieldsView extends VerticalLayout {
 
 	private final ApiFieldRepository apiFieldRepo;
 
@@ -27,7 +27,7 @@ public class MainView extends VerticalLayout {
 
 	private final Button addNewBtn;
 
-	public MainView(ApiFieldRepository apiFieldRepo, ApiFieldEditor apiFieldEditor) {
+	public ApiFieldsView(ApiFieldRepository apiFieldRepo, ApiFieldEditor apiFieldEditor) {
 		this.apiFieldRepo = apiFieldRepo;
 		this.apiFieldEditor = apiFieldEditor;
 		this.grid = new Grid<>(ApiField.class);
@@ -68,7 +68,7 @@ public class MainView extends VerticalLayout {
 		listApiFields(null);
 	}
 
-	// tag::listCustomers[]
+	// tag::listFields[]
 	void listApiFields(String filterText) {
 		if (StringUtils.isEmpty(filterText)) {
 			grid.setItems(apiFieldRepo.findAll());
@@ -77,5 +77,5 @@ public class MainView extends VerticalLayout {
 			grid.setItems(apiFieldRepo.findByNameStartsWithIgnoreCase(filterText));
 		}
 	}
-	// end::listCustomers[]
+	// end::listFields[]
 }

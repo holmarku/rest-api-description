@@ -14,3 +14,4 @@ public enum TypeFormat {
 	String_date_time,	//As defined by date-time - RFC3339
 	String_password
 }
+

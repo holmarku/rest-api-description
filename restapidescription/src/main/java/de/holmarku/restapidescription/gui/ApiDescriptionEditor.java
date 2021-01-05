@@ -1,11 +1,5 @@
 package de.holmarku.restapidescription.gui;
 
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.stream.Stream;
-
-import org.apache.commons.lang3.EnumUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.flow.component.Key;
@@ -20,26 +14,26 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 
-import de.holmarku.restapidescription.enums.TypeFormat;
-import de.holmarku.restapidescription.model.ApiField;
-import de.holmarku.restapidescription.repository.ApiFieldRepository;
+import de.holmarku.restapidescription.enums.ProductEnum;
+import de.holmarku.restapidescription.model.ApiDescription;
+import de.holmarku.restapidescription.repository.ApiDescriptionRepository;
 
 @SpringComponent
 @UIScope
-public class ApiFieldEditor extends VerticalLayout implements KeyNotifier {
+public class ApiDescriptionEditor extends VerticalLayout implements KeyNotifier {
 
-	private final ApiFieldRepository apiFieldRepo;
+	private final ApiDescriptionRepository apiDescriptionRepo;
 
 	/**
-	 * The currently edited customer
+	 * The currently edited description
 	 */
-	private ApiField apiField;
+	private ApiDescription apiDescriptionObject;
 
 	/* Fields to edit properties in ApiFiel entity */
-	TextField name = new TextField("Name");
-	TextField descriptionDe = new TextField("Description DE");
-	TextField descriptionEn = new TextField("Description EN");
-	ComboBox<TypeFormat> typeFormat = new ComboBox<>();
+	TextField apiTitle = new TextField("Title");
+	TextField apiDescription = new TextField("Description");
+	TextField apiUrl = new TextField("Url");
+	ComboBox<ProductEnum> productEnum = new ComboBox<>();
 
 	/* Action buttons */
 	Button save = new Button("Save", VaadinIcon.CHECK.create());
@@ -47,17 +41,17 @@ public class ApiFieldEditor extends VerticalLayout implements KeyNotifier {
 	Button delete = new Button("Delete", VaadinIcon.TRASH.create());
 	HorizontalLayout actions = new HorizontalLayout(save, cancel, delete);
 
-	Binder<ApiField> binder = new Binder<>(ApiField.class);
+	Binder<ApiDescription> binder = new Binder<>(ApiDescription.class);
 	private ChangeHandler changeHandler;
 	
 	@Autowired
-	public ApiFieldEditor(ApiFieldRepository apiFieldRepo) {
-		this.apiFieldRepo = apiFieldRepo;
+	public ApiDescriptionEditor(ApiDescriptionRepository apiDescriptionRepo) {
+		this.apiDescriptionRepo = apiDescriptionRepo;
 		
-		typeFormat.setLabel("Type & Format");
-		typeFormat.setItems(TypeFormat.values());
+		productEnum.setLabel("Product");
+		productEnum.setItems(ProductEnum.values());
 		
-		add(name, descriptionDe, descriptionEn, typeFormat, actions);
+		add(apiTitle, apiDescription, productEnum, apiUrl, actions);
 
 		// bind using naming convention
 		binder.bindInstanceFields(this);	
@@ -74,17 +68,17 @@ public class ApiFieldEditor extends VerticalLayout implements KeyNotifier {
 		save.addClickListener(e -> save());
 		delete.addClickListener(e -> delete());
 		//cancel.addClickListener(e -> editApiField(apiField));
-		cancel.addClickListener(e -> editApiField(null));
+		cancel.addClickListener(e -> editApiDescription(null));
 		setVisible(false);
 	}
 
 	void delete() {
-		apiFieldRepo.delete(apiField);
+		apiDescriptionRepo.delete(apiDescriptionObject);
 		changeHandler.onChange();
 	}
 
 	void save() {
-		apiFieldRepo.save(apiField);
+		apiDescriptionRepo.save(apiDescriptionObject);
 		changeHandler.onChange();
 	}
 
@@ -92,33 +86,33 @@ public class ApiFieldEditor extends VerticalLayout implements KeyNotifier {
 		void onChange();
 	}
 
-	public final void editApiField(ApiField af) {
-		if (af == null) {
+	public final void editApiDescription(ApiDescription ad) {
+		if (ad == null) {
 			setVisible(false);
 			return;
 		}
-		final boolean persisted = af.getId() != null;
+		final boolean persisted = ad.getId() != null;
 		//
 		
 		if (persisted) {
 			// Find fresh entity for editing
-			apiField = apiFieldRepo.findById(af.getId()).get();
-			typeFormat.setValue(apiField.getTypeFormat());
+			apiDescriptionObject = apiDescriptionRepo.findById(ad.getId()).get();
+			productEnum.setValue(apiDescriptionObject.getProductEnum());
 		}
 		else {
-			apiField = af;
+			apiDescriptionObject = ad;
 		}
 		delete.setVisible(persisted);
 
 		// Bind customer properties to similarly named fields
 		// Could also use annotation or "manual binding" or programmatically
 		// moving values from fields to entities before saving
-		binder.setBean(apiField);
+		binder.setBean(apiDescriptionObject);
 
 		setVisible(true);
 
-		// Focus name initially
-		name.focus();
+		// Focus title initially
+		apiTitle.focus();
 	}
 
 	public void setChangeHandler(ChangeHandler h) {
