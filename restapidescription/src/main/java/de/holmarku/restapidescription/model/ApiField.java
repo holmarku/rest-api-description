@@ -1,13 +1,15 @@
 package de.holmarku.restapidescription.model;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-
-import org.hibernate.annotations.GenericGenerator;
+import javax.persistence.ManyToMany;
 
 import de.holmarku.restapidescription.enums.TypeFormat;
 
@@ -19,6 +21,9 @@ public class ApiField {
 	@GeneratedValue
     private Long id;
  
+	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "apiFields")  //(cascade = CascadeType.ALL, mappedBy ="id")
+	Set<ApiDescription> apiDescriptions;
+	
     @Column(length=50)  
     private String name;
     
@@ -72,6 +77,14 @@ public class ApiField {
 
 	public String getName() {
 		return name;
+	}
+
+	public Set<ApiDescription> getApiDescriptions() {
+		return apiDescriptions;
+	}
+
+	public void setApiDescriptions(Set<ApiDescription> apiDescriptions) {
+		this.apiDescriptions = apiDescriptions;
 	}
 
 	public void setName(String name) {

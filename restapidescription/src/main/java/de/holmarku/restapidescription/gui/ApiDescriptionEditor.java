@@ -6,6 +6,7 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyNotifier;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -16,7 +17,9 @@ import com.vaadin.flow.spring.annotation.UIScope;
 
 import de.holmarku.restapidescription.enums.ProductEnum;
 import de.holmarku.restapidescription.model.ApiDescription;
+import de.holmarku.restapidescription.model.ApiField;
 import de.holmarku.restapidescription.repository.ApiDescriptionRepository;
+import de.holmarku.restapidescription.repository.ApiFieldRepository;
 
 @SpringComponent
 @UIScope
@@ -44,14 +47,24 @@ public class ApiDescriptionEditor extends VerticalLayout implements KeyNotifier 
 	Binder<ApiDescription> binder = new Binder<>(ApiDescription.class);
 	private ChangeHandler changeHandler;
 	
+	private final ApiFieldRepository apiFieldRepo;
+	final Grid<ApiField> apiFields;
+	
 	@Autowired
-	public ApiDescriptionEditor(ApiDescriptionRepository apiDescriptionRepo) {
+	public ApiDescriptionEditor(ApiDescriptionRepository apiDescriptionRepo,
+			ApiFieldRepository apiFieldRepo) {
 		this.apiDescriptionRepo = apiDescriptionRepo;
+		this.apiFieldRepo = apiFieldRepo;
+		this.apiFields = new Grid<>(ApiField.class);
 		
 		productEnum.setLabel("Product");
 		productEnum.setItems(ProductEnum.values());
 		
-		add(apiTitle, apiDescription, productEnum, apiUrl, actions);
+		add(apiTitle, apiDescription, productEnum, apiUrl, apiFields, actions);
+		
+		apiFields.setHeight("300px");
+		apiFields.setColumns("id", "name", "typeFormat");
+		apiFields.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
 
 		// bind using naming convention
 		binder.bindInstanceFields(this);	
@@ -98,6 +111,7 @@ public class ApiDescriptionEditor extends VerticalLayout implements KeyNotifier 
 			// Find fresh entity for editing
 			apiDescriptionObject = apiDescriptionRepo.findById(ad.getId()).get();
 			productEnum.setValue(apiDescriptionObject.getProductEnum());
+			apiFields.setItems(apiDescriptionObject.getApiFields());
 		}
 		else {
 			apiDescriptionObject = ad;

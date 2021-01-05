@@ -1,13 +1,17 @@
 package de.holmarku.restapidescription.model;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-
-import org.hibernate.annotations.GenericGenerator;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
 import de.holmarku.restapidescription.enums.ProductEnum;
 
@@ -52,11 +56,14 @@ public class ApiDescription {
     /*
     @ElementCollection
     @ListProperties("apiPath, apiMethods.methodId, apiMethods.methodEnum, apiMethods.methodOperation")
+    */
     
-    hier: @OneToMany(cascade = CascadeType.All, mappedBy ="ToDo")
-    in abhängigen Klasse 
-    private Collection<ApiPath> apiPath; //oder List / ArrayList bzw Map / HashMap
-     */
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+			  name = "description_fields", 
+			  joinColumns = @JoinColumn(name = "api_description_id"), 
+			  inverseJoinColumns = @JoinColumn(name = "api_field_id"))
+	private Set<ApiField> apiFields; //oder List / ArrayList bzw Map / HashMap
 
 	public String getApiTitle() {
 		return apiTitle;
@@ -96,6 +103,14 @@ public class ApiDescription {
 
 	public void setApiUrl(String apiUrl) {
 		this.apiUrl = apiUrl;
+	}
+
+	public Set<ApiField> getApiFields() {
+		return apiFields;
+	}
+
+	public void setApiFields(Set<ApiField> apiFields) {
+		this.apiFields = apiFields;
 	}
     
 

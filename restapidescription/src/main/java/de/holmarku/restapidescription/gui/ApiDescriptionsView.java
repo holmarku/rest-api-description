@@ -12,6 +12,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 
 import de.holmarku.restapidescription.model.ApiDescription;
+import de.holmarku.restapidescription.model.ApiField;
 import de.holmarku.restapidescription.repository.ApiDescriptionRepository;
 
 @Route("descriptions")
